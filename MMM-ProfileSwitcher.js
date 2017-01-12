@@ -46,7 +46,7 @@ Module.register("MMM-ProfileSwitcher", {
     // Send a notification depending on the change of user and the config settings
     makeNotification: function (messages) {
         if (messages) {
-            var text = messages[this.current_user];
+            var text = messages[this.current_profile];
 
             if (text === undefined) {
                 text = messages[this.config.everyoneClass];
@@ -56,7 +56,7 @@ Module.register("MMM-ProfileSwitcher", {
                 this.sendNotification("SHOW_ALERT", {
                     type: "notification",
                     title: this.config.title,
-                    message: text.replace("%profile%", this.current_user)
+                    message: text.replace("%profile%", this.current_profile)
                 });
             }
         }
@@ -64,7 +64,7 @@ Module.register("MMM-ProfileSwitcher", {
 
     // Return a function that checks if the given module data should be displayed for the current user
     isVisible: function (self, useEveryone, classes) {
-        return classes.includes(self.current_user) ||                        // Does this module include the profile?
+        return classes.includes(self.current_profile) ||                        // Does this module include the profile?
                self.config.ignoreModules.some((m) => classes.includes(m)) || // Should this module be ignored?
                (useEveryone && classes.includes(self.config.everyoneClass)); // Should everyone see this module?
     },
@@ -89,21 +89,21 @@ Module.register("MMM-ProfileSwitcher", {
 
     // Take a different order of actions depening on the new user
     // This way, when we go back to the default user we can show a different notification
-    change_user: function (newUser) {
-        if (newUser == this.config.nobodyClass) {
+    change_user: function (newProfile) {
+        if (newProfile == this.config.nobodyClass) {
             Log.log("Changing to default user profile.");
             
             this.makeNotification(this.config.leaveMessages);
-            this.current_user = newUser;
+            this.current_profile = newProfile;
             this.set_user(this.config.includeEveryoneToDefault);
 
         } else {
-            Log.log("Changing to user profile " + newUser + ".");
+            Log.log("Changing to user profile " + newProfile + ".");
 
-            if (this.config.alwaysShowLeave && this.current_user !== this.config.nobodyClass)
+            if (this.config.alwaysShowLeave && this.current_profile !== this.config.nobodyClass)
                 this.makeNotification(this.config.leaveMessages);
             
-            this.current_user = newUser;
+            this.current_profile = newProfile;
             this.makeNotification(this.config.enterMessages);
             this.set_user(true);
         }
@@ -117,7 +117,7 @@ Module.register("MMM-ProfileSwitcher", {
         }
 
         // No need to change the layout if we are already in this current user
-        if (notification === "CURRENT_PROFILE" && payload !== this.current_user) {
+        if (notification === "CURRENT_PROFILE" && payload !== this.current_profile) {
             this.change_user(payload);
         }
     },
@@ -126,7 +126,7 @@ Module.register("MMM-ProfileSwitcher", {
     // Do this in start function and not in actual making of the notification.
     // This way we don't have to bother about it in that method and we only have to parse them all once.
     start: function () {
-        this.current_user = this.config.nobodyClass;
+        this.current_profile = this.config.nobodyClass;
 
         if (typeof this.config.ignoreModules === "string") {
             this.config.ignoreModules = this.config.ignoreModules.split(" ");
