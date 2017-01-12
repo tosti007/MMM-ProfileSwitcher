@@ -10,19 +10,19 @@
 
 Module.register("MMM-ProfileSwitcher", {
     defaults: {
-        // The name of the class which should be shown on startup and when there is no current user.
-        nobodyClass: "nobody",
-        // The name of the class which should be shown for every user.
+        // The name of the class which should be shown on startup and when there is no current profile.
+        defaultClass: "default",
+        // The name of the class which should be shown for every profile.
         everyoneClass: "everyone",
         // Determines if the default class includes the classes that everyone has.
         includeEveryoneToDefault: false,
-        // Determines if a leaveMessage should be shown when switching between two custom profiles (excluding nobodyClass).
+        // Determines if a leaveMessage should be shown when switching between two custom profiles (excluding defaultClass).
         alwaysShowLeave: true,
         // The duration (in milliseconds) of the show and hide animation.
         animationDuration: 1000,
-        // The module names and classes to ignore when switching user.
+        // The module names and classes to ignore when switching profile.
         // It's wise to add these two to the ignoreModules array, else you won't be able to view incomming alerts/notifications and updates
-        // "alert" can be omitted if you want different users to have different notifications
+        // "alert" can be omitted if you want different profiles to have different notifications
         ignoreModules: ["alert", "updatenotification"],
 
         // Determines if the title in the notifications should be present.
@@ -43,7 +43,7 @@ Module.register("MMM-ProfileSwitcher", {
         };
     },
 
-    // Send a notification depending on the change of user and the config settings
+    // Send a notification depending on the change of profile and the config settings
     makeNotification: function (messages) {
         if (messages) {
             var text = messages[this.current_profile];
@@ -62,15 +62,15 @@ Module.register("MMM-ProfileSwitcher", {
         }
     },
 
-    // Return a function that checks if the given module data should be displayed for the current user
+    // Return a function that checks if the given module data should be displayed for the current profile
     isVisible: function (self, useEveryone, classes) {
         return classes.includes(self.current_profile) ||                        // Does this module include the profile?
                self.config.ignoreModules.some((m) => classes.includes(m)) || // Should this module be ignored?
                (useEveryone && classes.includes(self.config.everyoneClass)); // Should everyone see this module?
     },
 
-    // Change the current layout into the new layout given the current user
-    set_user: function (useEveryone) {
+    // Change the current layout into the new layout given the current profile
+    set_profile: function (useEveryone) {
         var self = this;
 
         MM.getModules().enumerate(function (module) {
@@ -87,25 +87,25 @@ Module.register("MMM-ProfileSwitcher", {
         });
     },
 
-    // Take a different order of actions depening on the new user
-    // This way, when we go back to the default user we can show a different notification
-    change_user: function (newProfile) {
-        if (newProfile == this.config.nobodyClass) {
-            Log.log("Changing to default user profile.");
+    // Take a different order of actions depening on the new profile
+    // This way, when we go back to the default profile we can show a different notification
+    change_profile: function (newProfile) {
+        if (newProfile == this.config.defaultClass) {
+            Log.log("Changing to default profile.");
             
             this.makeNotification(this.config.leaveMessages);
             this.current_profile = newProfile;
-            this.set_user(this.config.includeEveryoneToDefault);
+            this.set_profile(this.config.includeEveryoneToDefault);
 
         } else {
-            Log.log("Changing to user profile " + newProfile + ".");
+            Log.log("Changing to profile " + newProfile + ".");
 
-            if (this.config.alwaysShowLeave && this.current_profile !== this.config.nobodyClass)
+            if (this.config.alwaysShowLeave && this.current_profile !== this.config.defaultClass)
                 this.makeNotification(this.config.leaveMessages);
             
             this.current_profile = newProfile;
             this.makeNotification(this.config.enterMessages);
-            this.set_user(true);
+            this.set_profile(true);
         }
     },
 
@@ -113,12 +113,12 @@ Module.register("MMM-ProfileSwitcher", {
     notificationReceived: function (notification, payload, sender) {
         if (notification === "DOM_OBJECTS_CREATED") {
             Log.log("Hiding all non default modules.");
-            this.set_user(this.config.includeEveryoneToDefault);
+            this.set_profile(this.config.includeEveryoneToDefault);
         }
 
-        // No need to change the layout if we are already in this current user
+        // No need to change the layout if we are already in this current profile
         if (notification === "CURRENT_PROFILE" && payload !== this.current_profile) {
-            this.change_user(payload);
+            this.change_profile(payload);
         }
     },
 
@@ -126,7 +126,7 @@ Module.register("MMM-ProfileSwitcher", {
     // Do this in start function and not in actual making of the notification.
     // This way we don't have to bother about it in that method and we only have to parse them all once.
     start: function () {
-        this.current_profile = this.config.nobodyClass;
+        this.current_profile = this.config.defaultClass;
 
         if (typeof this.config.ignoreModules === "string") {
             this.config.ignoreModules = this.config.ignoreModules.split(" ");
