@@ -35,7 +35,7 @@ modules: [
 ]
 ````
 
-For this module to have an effect you have to assign custom classes to your modules. The class `nobody` (if you don't change it) is shown on startup or when switched to. The class `everyone` (if you don't change it) is shown for all profiles, except for the `nobody` profile (can be configured). To specify if a module should be for a certain profile add this profile to the classes data. For multiple profiles separate the names with a space. **Note:** the class names are case sensitive.
+For this module to have an effect you have to assign custom classes to your modules. The class `default` (if you don't change it) is shown on startup or when switched to. The class `everyone` (if you don't change it) is shown for all profiles, except for the `default` profile (can be configured). To specify if a module should be for a certain profile add this profile to the classes data. For multiple profiles separate the names with a space. **Note:** the class names are case sensitive.
 
 This can be done like so:
 ````javascript
@@ -43,7 +43,7 @@ This can be done like so:
     module: 'example_module',
     // Set your classes here separated by a space.
     // Shown for all profiles and for the default profile
-    classes: 'nobody everyone'
+    classes: 'default everyone'
 },
 {
     module: 'example_module2',
@@ -58,22 +58,22 @@ The following properties can be configured:
 
 | Option                     | Description
 | -------------------------- | -----------
-| `nobodyClass`              | The name of the class which should be shown on startup and when there is no current profile. <br><br> **Possible values:** `string` <br> **Default value:** `"nobody"`
+| `defaultClass`             | The name of the class which should be shown on startup and when there is no current profile. <br><br> **Possible values:** `string` <br> **Default value:** `"default"`
 | `everyoneClass`            | The name of the class which should be shown for every profile. <br><br> **Possible values:** `string` <br> **Default value:** `"everyone"`
 | `includeEveryoneToDefault` | Determines if the default class includes the classes that everyone has. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
-| `alwaysShowLeave`          | Determines if a leaveMessage should be shown when switching between two custom profiles (excluding nobodyClass). <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
+| `alwaysShowLeave`          | Determines if a leaveMessage should be shown when switching between two custom profiles (excluding defaultClass). <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `animationDuration`        | The duration (in milliseconds) of the show and hide animation. <br><br> **Possible values:** `int` <br> **Default value:** `1000`
 | `ignoreModules`            | The module names and classes to ignore when switching profiles. Can be one string with multiple classes splitted with spaces or a string array.<br><br> **Note:** It's wise to add the two default values to the ignoreModules array, else you won't be able to view incomming alerts/notifications and updates. `alert` can be omitted if you want different profiles to have different notifications. <br> **Possible values:** `string` or `string array` <br> **Default value:** `["alert", "updatenotification"]`
 | `title`                    | Determines if the title in the notifications should be present. If this value is set to a string it will replace the default title.<br><br> **Possible values:** `true`, `false` or `string` <br> **Default value:** `true`
 | `enterMessages`            | The notification message that will be shown when we switch to a different profile. See [Changing Profile Messages](#Changing-Profile-Messages) for more information. <br><br> **Possible values:** `Dictionary of profiles` or `false` <br> **Default value:** `{}`
-| `leaveMessages`            | The notification message that will be shown when we switch to the `nobodyClass`. See [Changing Profile Messages](#Changing-Profile-Messages) for more information. <br><br> **Possible values:** `Dictionary of profiles` or `false` <br> **Default value:** `{}`
+| `leaveMessages`            | The notification message that will be shown when we switch to the `defaultClass`. See [Changing Profile Messages](#Changing-Profile-Messages) for more information. <br><br> **Possible values:** `Dictionary of profiles` or `false` <br> **Default value:** `{}`
 
 
 ## Changing Profile Messages
 We can set a custom message for each of the profiles in a number of ways. This is done by setting a value for the `enterMessages` or `leaveMessages` config. In these custom messages the substring `%profile%` will be replaced with the current profile.
 
-The enter messages will be shown upon changing to a different profile. This can either be from `nobodyClass` or from a custom profile.
-The leave message will be shown when we change profile to the `nobodyClass` or a custom profile if `alwaysShowLeave` is `true`. Here `%profile%` will be the profile that is leaving.
+The enter messages will be shown upon changing to a different profile. This can either be from `defaultClass` or from a custom profile.
+The leave message will be shown when we change profile to the `defaultClass` or a custom profile if `alwaysShowLeave` is `true`. Here `%profile%` will be the profile that is leaving.
 
 #### Disabling Messages
 In order to disable a leave or enter message entirely you can, instead of using a dictionary, set this value to false. Example:
@@ -179,7 +179,7 @@ If you removed the getTranslations method as mentioned above you can also safely
 ````
 ~/MagicMirror/modules/MMM-Facial-Recognition/translations
 ````
-Lastly you will have to edit two of his calls to the `sendNotification` function. We will have to change `CURRENT_USER` into `CURRENT_PROFILE` and `"None"` into your `nobodyClass`.
+Lastly you will have to edit two of his calls to the `sendNotification` function. We will have to change `CURRENT_USER` into `CURRENT_PROFILE` and `"None"` into your `defaultClass`.
 At the end the logout and login functions should look like this:
 ````javascript
 // Code from paviro's MMM-Facial-Recognition
@@ -187,7 +187,7 @@ login_user: function () {
     this.sendNotification("CURRENT_PROFILE", this.current_user);
 },
 logout_user: function () {
-    this.sendNotification("CURRENT_PROFILE", "nobody"); // nobody is the default nobodyClass
+    this.sendNotification("CURRENT_PROFILE", "default"); // default value of defaultClass
 },
 ````
 And then you should be done!
