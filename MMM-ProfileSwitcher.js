@@ -53,6 +53,11 @@ Module.register("MMM-ProfileSwitcher", {
             }
 
             if (text) {
+                // if there are more than one options then take a random one
+                text = (text.length === 0)
+                    ? text[0]
+                    : text[Math.floor(Math.random() * text.length)];
+
                 this.sendNotification("SHOW_ALERT", {
                     type: "notification",
                     title: this.config.title,
@@ -92,7 +97,7 @@ Module.register("MMM-ProfileSwitcher", {
     change_profile: function (newProfile) {
         if (newProfile == this.config.defaultClass) {
             Log.log("Changing to default profile.");
-            
+
             this.makeNotification(this.config.leaveMessages);
             this.current_profile = newProfile;
             this.set_profile(this.config.includeEveryoneToDefault);
@@ -152,7 +157,7 @@ Module.register("MMM-ProfileSwitcher", {
         
         if (typeof data === "boolean") {
             if (data) {
-                result[this.config.everyoneClass] = translated;
+                result[this.config.everyoneClass] = [translated];
             }
             return result;
         }
@@ -162,22 +167,29 @@ Module.register("MMM-ProfileSwitcher", {
             var value = data[classes];
 
             if (value !== false) {
-                if (value === true) {
-                    value = translated;
+                if (typeof value !== "object") {
+                    value = [value];
                 }
 
+                value = value.map((x) => {
+                    return x === true ? translated : x;
+                });
+
                 classes.split(" ").forEach((key) => {
-                    result[key] = value;
+                    if (result[key] === undefined) {
+                        result[key] = [];
+                    }
+
+                    result[key] = result[key].concat(value);
                 });
             }
+
         }
 
-        // Assign the everyoneClass value.
-        result[this.config.everyoneClass] = 
-            (  data[this.config.everyoneClass] === undefined
-            || data[this.config.everyoneClass] === true)
-            ? translated
-            : data[this.config.everyoneClass];
+        // Assign the everyoneClass value if this hasn't been done yet.
+        if (data[this.config.everyoneClass] === undefined || data[this.config.everyoneClass] === true) {
+            result[this.config.everyoneClass] = translated;
+        }
 
         return result;
     }

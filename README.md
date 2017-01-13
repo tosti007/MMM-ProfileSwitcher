@@ -7,7 +7,7 @@
 This an extension for the [MagicMirror²](https://magicmirror.builders/).
 This Module adds the ability to have different layouts for different profiles.
 
-Special thanks goes to [Paviro](https://github.com/paviro) as this module's classes idea is based on his [MMM-Facial-Recognition] module's classes idea.
+Special thanks goes to [Paviro](https://github.com/paviro) for giving input, working together and because this module's classes idea is based on his [MMM-Facial-Recognition] module's classes idea.
 
 ## Installation
 
@@ -65,42 +65,41 @@ The following properties can be configured:
 | `animationDuration`        | The duration (in milliseconds) of the show and hide animation. <br><br> **Possible values:** `int` <br> **Default value:** `1000`
 | `ignoreModules`            | The module names and classes to ignore when switching profiles. Can be one string with multiple classes splitted with spaces or a string array.<br><br> **Note:** It's wise to add the two default values to the ignoreModules array, else you won't be able to view incomming alerts/notifications and updates. `alert` can be omitted if you want different profiles to have different notifications. <br> **Possible values:** `string` or `string array` <br> **Default value:** `["alert", "updatenotification"]`
 | `title`                    | Determines if the title in the notifications should be present. If this value is set to a string it will replace the default title.<br><br> **Possible values:** `true`, `false` or `string` <br> **Default value:** `true`
-| `enterMessages`            | The notification message that will be shown when we switch to a different profile. See [Changing Profile Messages](#Changing-Profile-Messages) for more information. <br><br> **Possible values:** `Dictionary of profiles` or `false` <br> **Default value:** `{}`
-| `leaveMessages`            | The notification message that will be shown when we switch to the `defaultClass`. See [Changing Profile Messages](#Changing-Profile-Messages) for more information. <br><br> **Possible values:** `Dictionary of profiles` or `false` <br> **Default value:** `{}`
+| `enterMessages`            | The notification message that will be shown when we switch to a different profile. See [Changing Profile Messages](#Changing-Profile-Messages) for more information. <br><br> **Possible values:** `Object with profiles` or `false` <br> **Default value:** `{}`
+| `leaveMessages`            | The notification message that will be shown when we switch to the `defaultClass`. See [Changing Profile Messages](#Changing-Profile-Messages) for more information. <br><br> **Possible values:** `Object with profiles` or `false` <br> **Default value:** `{}`
 
 
 ## Changing Profile Messages
-We can set a custom message for each of the profiles in a number of ways. This is done by setting a value for the `enterMessages` or `leaveMessages` config. In these custom messages the substring `%profile%` will be replaced with the current profile.
+We can set a custom messages for each of the profiles in a number of ways. If multiple messages are set for one single profile then a random.
+You can change them by setting a value for the `enterMessages` or `leaveMessages` config. In these custom messages the substring `%profile%` will be replaced with the current profile.
 
 The enter messages will be shown upon changing to a different profile. This can either be from `defaultClass` or from a custom profile.
 The leave message will be shown when we change profile to the `defaultClass` or a custom profile if `alwaysShowLeave` is `true`. Here `%profile%` will be the profile that is leaving.
 
 #### Disabling Messages
+Set the value to `false` for the profiles you don't want to have a message.
 In order to disable a leave or enter message entirely you can, instead of using a dictionary, set this value to false. Example:
 ````javascript
 config: {
-    // Disable the leave messages
-    leaveMessages: false
-}
-````
-If you only want to disable a single profile you will have to put it in a dictionary. Example:
-
-````javascript
-config: {
-    // Disable the leave messages for me
-    leaveMessages: {
+    // Disable the enter messages for me, but not the others
+    enterMessages: {
         "Brian": false
     }
+    // Disable the leave messages entirely
+    leaveMessages: false
 }
 ````
 
 #### Setting Message For A Single Profile
-Setting a custom message for a single profile can be done like so:
+Setting custom messages for a single profile can be done by using a `string` or an `array of string` as value.
+If there are multiple options, a random message will be chosen.
 ````javascript
 config: {
-    // Customize the enter messages for me
     enterMessages: {
-        "Brian": "You again?!?!"
+        // I will have only one message.
+        "Brian": "You again?!?!",
+        // Kevin has two portions
+        "Kevin": ["Oh hello.", "Hey how is it going?"]
     }
 }
 ````
@@ -110,8 +109,11 @@ Setting or disabling the message for multiple profiles can be done in the same w
 ````javascript
 config: {
     // Customize the enter messages for me and Kevin
+    // %profile% will be replaced with the correct name
     enterMessages: {
-        "Brian Kevin": "What's up %profile%?" // %profile% will be replaced with the correct name
+        "Brian Kevin": "What's up %profile%?", // We both have this message
+        "Brian": ["Yo!", "Hey!"], // I have two additional messages
+        "Kevin": "Having a nice day?" // Kevin has one additional message
     }
 }
 ````
@@ -130,7 +132,11 @@ config: {
     },
     // Everyone has a custom message
     leaveMessages: {
-        "everyone": "Hey %person%, already leaving?" // %profile% will be replaced with the correct name
+        // %profile% will be replaced with the correct name
+        "everyone": "Hey %person%, already leaving?",
+        // I have a custom and the default message
+        //  this is not the same as everyone since we changed it
+        "Brian": ["Bye bye!", true]
     }
 }
 ````
@@ -161,7 +167,9 @@ You can switch to a profile on a certain given time by scheduling a notification
 },
 ````
 
-### [MMM-Facial-Recognition] by paviro
+### [MMM-Facial-Recognition] by Paviro
+**Note: ** Paviro and I made some changes to use these two modules together more convenient. Once we are sure it fully works I will update this guide.
+
 Using the [MMM-Facial-Recognition] module and [MMM-ProfileSwitcher] together does not work straight out of the box.
 In order for [MMM-Facial-Recognition] to use the [MMM-ProfileSwitcher] module we will have to change a few lines of the code in the [MMM-Facial-Recognition] module's javascript file.
 This file can be found in (after installing his module):
@@ -200,8 +208,9 @@ And then you should be done!
 
 ## Notes
 * All the profile names are case sensitive.
+* Multiple messages for a single profile will result in a randomly chosen message.
 * If no class is set then it will never show, unless it is added to the `ignoreModules` array.
-* It's wise to add `alert` and `updatenotification` to the ignoreModules array.
+* It's wise to add `alert` and `updatenotification` to the `ignoreModules` array.
 * Using `true` for everyone is the same as not assigning it.
 * I do not use lockstrings for hiding the layout, this way you can still unhide a module at any given moment.
 
