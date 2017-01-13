@@ -77,7 +77,7 @@ You can change them by setting a value for the `enterMessages` or `leaveMessages
 The enter messages will be shown upon changing to a different profile. This can either be from `defaultClass` or from a custom profile.
 The leave message will be shown when we change profile to the `defaultClass` or a custom profile if `alwaysShowLeave` is `true`. Here `%profile%` will be the profile that is leaving.
 
-**Note: ** in these example I always assumed that `includeEveryoneMessages` was `false`.
+**Note:** in these example I always assumed that `includeEveryoneMessages` was `false`.
 
 #### Disabling Messages
 Set the value to `false` for the profiles you don't want to have a message.
