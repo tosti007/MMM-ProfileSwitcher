@@ -67,6 +67,7 @@ The following properties can be configured:
 | `title`                    | Determines if the title in the notifications should be present. If this value is set to a string it will replace the default title.<br><br> **Possible values:** `true`, `false` or `string` <br> **Default value:** `true`
 | `enterMessages`            | The notification message that will be shown when we switch to a different profile. See [Changing Profile Messages](#Changing-Profile-Messages) for more information. <br><br> **Possible values:** `Object with profiles` or `false` <br> **Default value:** `{}`
 | `leaveMessages`            | The notification message that will be shown when we switch to the `defaultClass`. See [Changing Profile Messages](#Changing-Profile-Messages) for more information. <br><br> **Possible values:** `Object with profiles` or `false` <br> **Default value:** `{}`
+| `includeEveryoneMessages`  | Determines if the messages for everyone should also be added to the possible messages for profiles that have custome messages. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 
 
 ## Changing Profile Messages
@@ -75,6 +76,8 @@ You can change them by setting a value for the `enterMessages` or `leaveMessages
 
 The enter messages will be shown upon changing to a different profile. This can either be from `defaultClass` or from a custom profile.
 The leave message will be shown when we change profile to the `defaultClass` or a custom profile if `alwaysShowLeave` is `true`. Here `%profile%` will be the profile that is leaving.
+
+**Note: ** in these example I always assumed that `includeEveryoneMessages` was `false`.
 
 #### Disabling Messages
 Set the value to `false` for the profiles you don't want to have a message.
