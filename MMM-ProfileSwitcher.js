@@ -33,6 +33,7 @@ Module.register("MMM-ProfileSwitcher", {
         enterMessages: {},
         leaveMessages: {},
 
+        // Determines if the messages for everyone should also be set for profiles that have custome messages.
         includeEveryoneMessages: false
     },
 
@@ -52,6 +53,7 @@ Module.register("MMM-ProfileSwitcher", {
 
             if (text === undefined) {
                 text = messages[this.config.everyoneClass];
+
             } else if (this.config.includeEveryoneMessages) {
                 text = messages[this.config.everyoneClass].concat(text);
             }
@@ -109,9 +111,10 @@ Module.register("MMM-ProfileSwitcher", {
         } else {
             Log.log("Changing to profile " + newProfile + ".");
 
-            if (this.config.alwaysShowLeave && this.current_profile !== this.config.defaultClass)
+            if (this.config.alwaysShowLeave && this.current_profile !== this.config.defaultClass) {
                 this.makeNotification(this.config.leaveMessages);
-            
+            }
+
             this.current_profile = newProfile;
             this.makeNotification(this.config.enterMessages);
             this.set_profile(true);
@@ -158,7 +161,7 @@ Module.register("MMM-ProfileSwitcher", {
     // Given a message conviguration and a translation, parse the configuration and return the new one
     parseMessages: function (data, translated) {
         var result = {};
-        
+
         if (typeof data === "boolean") {
             if (data) {
                 result[this.config.everyoneClass] = [translated];
