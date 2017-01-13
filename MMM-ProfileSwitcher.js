@@ -195,7 +195,7 @@ Module.register("MMM-ProfileSwitcher", {
 
         // Assign the everyoneClass value if this hasn't been done yet.
         if (data[this.config.everyoneClass] === undefined || data[this.config.everyoneClass] === true) {
-            result[this.config.everyoneClass] = translated;
+            result[this.config.everyoneClass] = [translated];
         }
 
         return result;
