@@ -52,9 +52,9 @@ Module.register("MMM-ProfileSwitcher", {
                 text = messages[this.config.everyoneClass];
             }
 
-            if (text) {
+            if (text.length > 0) {
                 // if there are more than one options then take a random one
-                text = (text.length === 0)
+                text = (text.length === 1)
                     ? text[0]
                     : text[Math.floor(Math.random() * text.length)];
 
