@@ -31,7 +31,9 @@ Module.register("MMM-ProfileSwitcher", {
 
         // Custom messages for different profiles, for how-to on configuring these see README.md
         enterMessages: {},
-        leaveMessages: {}
+        leaveMessages: {},
+
+        includeEveryoneMessages: false
     },
 
     // Override the default getTranslations function
@@ -50,6 +52,8 @@ Module.register("MMM-ProfileSwitcher", {
 
             if (text === undefined) {
                 text = messages[this.config.everyoneClass];
+            } else if (this.config.includeEveryoneMessages) {
+                text = messages[this.config.everyoneClass].concat(text);
             }
 
             if (text.length > 0) {
