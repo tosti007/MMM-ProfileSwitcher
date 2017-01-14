@@ -126,10 +126,12 @@ Module.register("MMM-ProfileSwitcher", {
         if (notification === "DOM_OBJECTS_CREATED") {
             Log.log("Hiding all non default modules.");
             this.set_profile(this.config.includeEveryoneToDefault);
+            this.sendNotification("CHANGED_PROFILE", {to: this.config.defaultClass});
         }
 
         // No need to change the layout if we are already in this current profile
         if (notification === "CURRENT_PROFILE" && payload !== this.current_profile) {
+            this.sendNotification("CHANGED_PROFILE", {from: this.current_profile, to: payload});
             this.change_profile(payload);
         }
     },
