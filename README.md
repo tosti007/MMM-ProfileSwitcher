@@ -1,4 +1,4 @@
-<!-- All the links I use multiple times in this readme file, this way I won't have to copy paste so often -->
+﻿<!-- All the links I use multiple times in this readme file, this way I won't have to copy paste so often -->
 [MMM-Facial-Recognition]: https://github.com/paviro/MMM-Facial-Recognition
 [MMM-ProfileSwitcher]: (https://github.com/tosti007/MMM-ProfileSwitcher)
 
@@ -171,7 +171,7 @@ You can switch to a profile on a certain given time by scheduling a notification
 ````
 
 ### [MMM-Facial-Recognition] by Paviro
-**Note: ** Paviro and I made some changes to use these two modules together more convenient. Once we are sure it fully works I will update this guide.
+**Note:** Paviro and I made some changes to use these two modules together more convenient. Once we are sure it fully works I will update this guide.
 
 Using the [MMM-Facial-Recognition] module and [MMM-ProfileSwitcher] together does not work straight out of the box.
 In order for [MMM-Facial-Recognition] to use the [MMM-ProfileSwitcher] module we will have to change a few lines of the code in the [MMM-Facial-Recognition] module's javascript file.
@@ -180,17 +180,17 @@ This file can be found in (after installing his module):
 ~/MagicMirror/modules/MMM-Facial-Recognition
 ````
 Here we will have to remove the lines. Since his translations are not being used anymore we can also delete these lines (the `getTranslations` function).
-Since we will be removing all his code inside the `notificationReceived` function, we might remove that one aswell.
+Since we will be removing all his code inside the `notificationReceived` function, we might remove that one as well.
 
 The lines are (all inclusive):
 ````
-32-36, 49-61, 65-77, 97, 104-113 and 38-46 (translations)
+34-36, 52-64, 68-80, 100, 107-116 and 38-49 (translations)
 ````
 If you removed the getTranslations method as mentioned above you can also safely delete the translation folder.
 ````
 ~/MagicMirror/modules/MMM-Facial-Recognition/translations
 ````
-Lastly you will have to edit two of his calls to the `sendNotification` function. We will have to change `CURRENT_USER` into `CURRENT_PROFILE` and `"None"` into your `defaultClass`.
+Lastly you will have to edit two of his calls to the `sendNotification` function on lines `65` and `81`. We will have to change `CURRENT_USER` into `CURRENT_PROFILE` and `"None"` into the `defaultClass`, which has to have the same value as the profile switcher module's `defaultClass`.
 At the end the logout and login functions should look like this:
 ````javascript
 // Code from paviro's MMM-Facial-Recognition
@@ -198,7 +198,7 @@ login_user: function () {
     this.sendNotification("CURRENT_PROFILE", this.current_user);
 },
 logout_user: function () {
-    this.sendNotification("CURRENT_PROFILE", "default"); // default value of defaultClass
+    this.sendNotification("CURRENT_PROFILE", this.config.defaultClass);
 },
 ````
 And then you should be done!
@@ -215,6 +215,9 @@ And then you should be done!
 * If no class is set then it will never show, unless it is added to the `ignoreModules` array.
 * It's wise to add `alert` and `updatenotification` to the `ignoreModules` array.
 * Using `true` for everyone is the same as not assigning it.
+
+## Notes For Other Developers
+* A `CHANGED_PROFILE` notifcation will be send after the `current_user` was modified.
 * I do not use lockstrings for hiding the layout, this way you can still unhide a module at any given moment.
 
 
