@@ -65,8 +65,8 @@ The following properties can be configured:
 | `animationDuration`        | The duration (in milliseconds) of the show and hide animation. <br><br> **Possible values:** `int` <br> **Default value:** `1000`
 | `ignoreModules`            | The module names and classes to ignore when switching profiles. Can be one string with multiple classes splitted with spaces or a string array.<br><br> **Note:** It's wise to add the two default values to the ignoreModules array, else you won't be able to view incomming alerts/notifications and updates. `alert` can be omitted if you want different profiles to have different notifications. <br> **Possible values:** `string` or `string array` <br> **Default value:** `["alert", "updatenotification"]`
 | `title`                    | Determines if the title in the notifications should be present. If this value is set to a string it will replace the default title.<br><br> **Possible values:** `true`, `false` or `string` <br> **Default value:** `true`
-| `enterMessages`            | The notification message that will be shown when we switch to a different profile. See [Changing Profile Messages](#Changing-Profile-Messages) for more information. <br><br> **Possible values:** `Object with profiles` or `false` <br> **Default value:** `{}`
-| `leaveMessages`            | The notification message that will be shown when we switch to the `defaultClass`. See [Changing Profile Messages](#Changing-Profile-Messages) for more information. <br><br> **Possible values:** `Object with profiles` or `false` <br> **Default value:** `{}`
+| `enterMessages`            | The notification message that will be shown when we switch to a different profile. See [Changing Profile Messages](#changing-profile-messages) for more information. <br><br> **Possible values:** `Object with profiles` or `false` <br> **Default value:** `{}`
+| `leaveMessages`            | The notification message that will be shown when we switch to the `defaultClass`. See [Changing Profile Messages](#changing-profile-messages) for more information. <br><br> **Possible values:** `Object with profiles` or `false` <br> **Default value:** `{}`
 | `includeEveryoneMessages`  | Determines if the messages for everyone should also be added to the possible messages for profiles that have custome messages. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 
 
@@ -152,7 +152,7 @@ this.sendNotification('CURRENT_PROFILE', 'DESIRED_PROFILE_NAME_HERE');
 ````
 
 ## Using With Other Modules
-Since this module uses notifications, as described in [Switching profiles](#Switching-Profiles), it can easily be used in conjunction with other modules.
+Since this module uses notifications, as described in [Switching profiles](#switching-profiles), it can easily be used in conjunction with other modules.
 
 ### [MMM-ModuleScheduler](https://github.com/ianperrin/MMM-ModuleScheduler/) by Ian Perrin
 You can switch to a profile on a certain given time by scheduling a notification in the MMM-ModulesScheduler's config. For example like so:
