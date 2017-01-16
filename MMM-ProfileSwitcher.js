@@ -75,7 +75,8 @@ Module.register("MMM-ProfileSwitcher", {
 
     // Return a function that checks if the given module data should be displayed for the current profile
     isVisible: function (self, useEveryone, classes) {
-        return classes.includes(self.current_profile) ||                        // Does this module include the profile?
+        return classes.includes(self.current_profile)                     || // Does this module include the profile?
+               self.secondary_profiles.some((m) => classes.includes(m))   || // Does this module include a secondairy profile?
                self.config.ignoreModules.some((m) => classes.includes(m)) || // Should this module be ignored?
                (useEveryone && classes.includes(self.config.everyoneClass)); // Should everyone see this module?
     },
@@ -87,12 +88,12 @@ Module.register("MMM-ProfileSwitcher", {
         MM.getModules().enumerate(function (module) {
             if (self.isVisible(self, useEveryone, module.data.classes.split(" "))) {
                 module.show(self.config.animationDuration, function () {
-                    Log.log(module.name + " is shown.");
+                    Log.log("MMM-ProfileSwitcher showed " + module.name + ".");
                 });
 
             } else {
                 module.hide(self.config.animationDuration, function () {
-                    Log.log(module.name + " is hidden.");
+                    Log.log("MMM-ProfileSwitcher hid " + module.name + ".");
                 });
             }
         });
@@ -101,6 +102,10 @@ Module.register("MMM-ProfileSwitcher", {
     // Take a different order of actions depening on the new profile
     // This way, when we go back to the default profile we can show a different notification
     change_profile: function (newProfile) {
+        this.secondary_profiles.push(this.current_profile);
+        this.sendNotification("CHANGED_PROFILE", {from: this.secondary_profiles, to: newProfile});
+        this.secondary_profiles = [];
+
         if (newProfile == this.config.defaultClass) {
             Log.log("Changing to default profile.");
 
@@ -121,6 +126,25 @@ Module.register("MMM-ProfileSwitcher", {
         }
     },
 
+    add_profile: function (name) {
+        this.secondary_profiles.push(name);
+        this.sendNotification("ADDED_PROFILE", name);
+        var duration = this.config.animationDuration;
+        MM.getModules().enumerate(function (module) {
+            if (module.data.classes.includes(name)) {
+                module.show(duration, function () {
+                    Log.log(module.name + " is shown.");
+                });
+            }
+        });
+    },
+
+    remove_profile: function (name) {
+        this.secondary_profiles.splice(this.secondary_profiles.indexOf(name), 1);
+        this.sendNotification("REMOVED_PROFILE", name);
+        this.set_profile(this.current_profile !== this.config.defaultClass || this.config.includeEveryoneToDefault);
+    },
+
     // Override the default NotificationRecieved function
     notificationReceived: function (notification, payload, sender) {
         if (notification === "DOM_OBJECTS_CREATED") {
@@ -129,9 +153,16 @@ Module.register("MMM-ProfileSwitcher", {
             this.sendNotification("CHANGED_PROFILE", {to: this.config.defaultClass});
         }
 
+        if (notification === "ADD_PROFILE" && !this.secondary_profiles.includes(payload)) {
+            this.add_profile(payload);
+        }
+
+        if (notification === "REMOVE_PROFILE" && this.secondary_profiles.includes(payload)) {
+            this.remove_profile(payload);
+        }
+
         // No need to change the layout if we are already in this current profile
-        if (notification === "CURRENT_PROFILE" && payload !== this.current_profile) {
-            this.sendNotification("CHANGED_PROFILE", {from: this.current_profile, to: payload});
+        if (notification === "CURRENT_PROFILE" && (payload !== this.current_profile || this.secondary_profiles.length > 0)) {
             this.change_profile(payload);
         }
     },
@@ -141,6 +172,7 @@ Module.register("MMM-ProfileSwitcher", {
     // This way we don't have to bother about it in that method and we only have to parse them all once.
     start: function () {
         this.current_profile = this.config.defaultClass;
+        this.secondary_profiles = [];
 
         if (typeof this.config.ignoreModules === "string") {
             this.config.ignoreModules = this.config.ignoreModules.split(" ");
