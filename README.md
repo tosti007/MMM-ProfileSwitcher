@@ -1,6 +1,6 @@
 ﻿<!-- All the links I use multiple times in this readme file, this way I won't have to copy paste so often -->
 [MMM-Facial-Recognition]: https://github.com/paviro/MMM-Facial-Recognition
-[MMM-ProfileSwitcher]: (https://github.com/tosti007/MMM-ProfileSwitcher)
+[MMM-ProfileSwitcher]: https://github.com/tosti007/MMM-ProfileSwitcher
 
 # MMM-ProfileSwitcher
 
