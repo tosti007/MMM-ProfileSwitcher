@@ -184,7 +184,7 @@ Since we will be removing all his code inside the `notificationReceived` functio
 
 The lines are (all inclusive):
 ````
-34-36, 52-64, 68-80, 100, 107-116 and 38-49 (translations)
+34-37, 53-65, 69-81, 100-103, 110-119 and 39-50 (translations)
 ````
 If you removed the getTranslations method as mentioned above you can also safely delete the translation folder.
 ````
