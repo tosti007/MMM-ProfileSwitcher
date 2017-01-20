@@ -208,6 +208,7 @@ And then you should be done!
 * English
 * German
 * Dutch
+* Swedish (thanks to Snille)
 
 ## Notes
 * All the profile names are case sensitive.
