@@ -40,8 +40,8 @@ Module.register("MMM-ProfileSwitcher", {
     // Override the default getTranslations function
     getTranslations: function () {
         return {
-            de: "translations/de.json",
             en: "translations/en.json",
+            de: "translations/de.json",
             nl: "translations/nl.json"
         };
     },
