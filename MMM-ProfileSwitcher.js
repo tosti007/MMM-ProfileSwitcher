@@ -7,7 +7,6 @@
  * Special thanks to Paul-Vincent Roll http://paulvincentroll.com
  * MIT Licensed.
  */
-
 Module.register("MMM-ProfileSwitcher", {
     defaults: {
         // The name of the class which should be shown on startup and when there is no current profile.
@@ -126,7 +125,28 @@ Module.register("MMM-ProfileSwitcher", {
     notificationReceived: function (notification, payload, sender) {
         if (notification === "DOM_OBJECTS_CREATED") {
             Log.log("Hiding all non default modules.");
-            this.set_profile(this.config.includeEveryoneToDefault);
+            var self = this;
+            var profiles = {}
+
+            MM.getModules().enumerate(function (module) {
+                var data = module.data.classes.split(" ");
+                if (self.isVisible(self, self.config.includeEveryoneToDefault, data)) {
+                    module.show(self.config.animationDuration, function () {
+                        Log.log(module.name + " is shown.");
+                    });
+
+                } else {
+                    module.hide(self.config.animationDuration, function () {
+                        Log.log(module.name + " is hidden.");
+                    });
+                }
+                data.forEach(function (item) {
+                    profiles[item] = true
+                });
+                delete profiles[module.name];
+            });
+
+            this.sendNotification("ALL_PROFILES", {message:Object.keys(profiles)});
             this.sendNotification("CHANGED_PROFILE", {to: this.config.defaultClass});
         }
 
