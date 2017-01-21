@@ -146,7 +146,7 @@ Module.register("MMM-ProfileSwitcher", {
                 delete profiles[module.name];
             });
 
-            this.sendNotification("ALL_PROFILES", {message:Object.keys(profiles)});
+            this.sendNotification("ALL_PROFILES", Object.keys(profiles));
             this.sendNotification("CHANGED_PROFILE", {to: this.config.defaultClass});
         }
 
