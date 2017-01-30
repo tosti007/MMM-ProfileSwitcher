@@ -35,7 +35,13 @@ Module.register("MMM-ProfileSwitcher", {
         leaveMessages: {},
 
         // Determines if the messages for everyone should also be set for profiles that have custome messages.
-        includeEveryoneMessages: false
+        includeEveryoneMessages: false,
+
+        // The default time when none is set for a profile in timers
+        defaultTime: 60000,
+        // Timers for different profiles. A timer lets you automatically swap to a different profile after a certain amount of time. 
+        // Check README.md for configuration
+        timers: undefined
     },
 
     // Override the default getTranslations function
@@ -100,26 +106,42 @@ Module.register("MMM-ProfileSwitcher", {
         });
     },
 
+    // Clear the current timer and set a new one with the new profile.
+    set_timer: function (data) {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(this.change_profile.bind(this), 
+            data.time    || this.config.defaultTime, 
+            data.profile || this.config.defaultClass);
+    },
+
     // Take a different order of actions depening on the new profile
     // This way, when we go back to the default profile we can show a different notification
     change_profile: function (newProfile) {
-        if (newProfile == this.config.defaultClass) {
-            Log.log("Changing to default profile.");
+        // No need to change the layout if we are already in this current profile
+        if (newProfile !== this.current_profile) {
+            this.sendNotification("CHANGED_PROFILE", {from: this.current_profile, to: newProfile});
 
-            this.makeNotification(this.config.leaveMessages);
-            this.current_profile = newProfile;
-            this.set_profile(this.config.includeEveryoneToDefault);
+            if (newProfile == this.config.defaultClass) {
+                Log.log("Changing to default profile.");
 
-        } else {
-            Log.log("Changing to profile " + newProfile + ".");
-
-            if (this.config.alwaysShowLeave && this.current_profile !== this.config.defaultClass) {
                 this.makeNotification(this.config.leaveMessages);
-            }
+                this.current_profile = newProfile;
+                this.set_profile(this.config.includeEveryoneToDefault);
 
-            this.current_profile = newProfile;
-            this.makeNotification(this.config.enterMessages);
-            this.set_profile(true);
+            } else {
+                Log.log("Changing to profile " + newProfile + ".");
+
+                if (this.config.alwaysShowLeave && this.current_profile !== this.config.defaultClass) {
+                    this.makeNotification(this.config.leaveMessages);
+                }
+
+                this.current_profile = newProfile;
+                this.makeNotification(this.config.enterMessages);
+                this.set_profile(true);
+                if (this.config.timers && this.config.timers[newProfile]){
+                    this.set_timer(this.config.timers[newProfile]);
+                }
+            }
         }
     },
 
@@ -129,11 +151,7 @@ Module.register("MMM-ProfileSwitcher", {
             Log.log("Hiding all non default modules.");
             this.set_profile(this.config.includeEveryoneToDefault);
             this.sendNotification("CHANGED_PROFILE", {to: this.config.defaultClass});
-        }
-
-        // No need to change the layout if we are already in this current profile
-        if (notification === "CURRENT_PROFILE" && payload !== this.current_profile) {
-            this.sendNotification("CHANGED_PROFILE", {from: this.current_profile, to: payload});
+        } else if (notification === "CURRENT_PROFILE") {
             this.change_profile(payload);
         }
     },
@@ -142,6 +160,7 @@ Module.register("MMM-ProfileSwitcher", {
     // Do this in start function and not in actual making of the notification.
     // This way we don't have to bother about it in that method and we only have to parse them all once.
     start: function () {
+        this.timer = null;
         this.current_profile = this.config.defaultClass;
 
         if (typeof this.config.ignoreModules === "string") {
