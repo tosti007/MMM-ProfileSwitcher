@@ -68,6 +68,8 @@ The following properties can be configured:
 | `enterMessages`            | The notification message that will be shown when we switch to a different profile. See [Configuring Profile Messages](#configuring-profile-messages) for more information. <br><br> **Possible values:** `Object with profiles` or `false` <br> **Default value:** `{}`
 | `leaveMessages`            | The notification message that will be shown when we switch to the `defaultClass`. See [Configuring Profile Messages](#configuring-profile-messages) for more information. <br><br> **Possible values:** `Object with profiles` or `false` <br> **Default value:** `{}`
 | `includeEveryoneMessages`  | Determines if the messages for everyone should also be added to the possible messages for profiles that have custome messages. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
+| `defaultTime`              | The default time (in microseconds) when none is set for a profile in `timers`. <br><br> **Possible values:** `number` <br> **Default value:** `60000` (`60` seconds)
+| `timers`                   | Timers for different profiles. A timer lets you automatically swap to a different profile after a certain amount of time.  See [Configuring Timers](#configuring-timers) for more information. <br><br> **Possible values:** `Object with timers` or `undefined` <br> **Default value:** `undefined`
 
 
 ## Configuring Profile Messages
@@ -143,6 +145,33 @@ config: {
     }
 }
 ````
+
+## Configuring Timers
+A timer is for switching to a different profile after a certain profile has been selected. Each timer is an object/dictionairy and must have the profile name and has an optional profile name to switch to and an optional time.
+If no profile to switch to is set the timer will use `defaultClass`. If no time is set then it will use `defaultTime`. A few examples:
+````javascript
+timers: {
+    // when Brian is selected swap to the defaultClass after the defaultTime
+    "Brian": {},
+
+    // When Lisa is selected swap to Brian after 20 seconds
+    "Lisa": {
+        profile: "Brian",
+        time: 20 * 1000
+    },
+
+    // When Kevin is selected swap to the defaultClass after the 5 seconds
+    "Kevin": {
+        time: 5 * 1000
+    },
+
+    // When default is selected swap to Lisa after the defaultTime
+    "default": {
+        profile: "Lisa"
+    }
+}
+````
+**Note:** this example will create a loop (default-Lisa-Brian).
 
 ## Switching Profiles
 Switching Profiles can be done by sending a notification with the payload being the desired profile.
