@@ -29,7 +29,8 @@ Module.register("MMM-ProfileSwitcher", {
         //  If this value is set to a string it will replace the default title.
         title: true,
 
-        // Custom messages for different profiles, for how-to on configuring these see README.md
+        // Custom messages for different profiles.
+        // Check README.md for configuration
         enterMessages: {},
         leaveMessages: {},
 
@@ -47,7 +48,7 @@ Module.register("MMM-ProfileSwitcher", {
         };
     },
 
-    // Send a notification depending on the change of profile and the config settings
+    // Show a random notification depending on the change of profile and the config settings
     makeNotification: function (messages) {
         if (messages) {
             var text = messages[this.current_profile];
@@ -161,7 +162,7 @@ Module.register("MMM-ProfileSwitcher", {
         Log.info("Starting module: " + this.name);
     },
 
-    // Given a message conviguration and a translation, parse the configuration and return the new one
+    // Given a message configuration and a translation, parse the configuration and return the new one
     parseMessages: function (data, translated) {
         var result = {};
 
