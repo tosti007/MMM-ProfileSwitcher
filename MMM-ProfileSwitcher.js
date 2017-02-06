@@ -196,10 +196,10 @@ Module.register("MMM-ProfileSwitcher", {
         if (typeof data === "boolean") {
             if (data) {
                 result[this.config.everyoneClass] = [translated];
-            } else {
-                return false;
+                return result;
             }
-            return result;
+            
+            return false;
         }
 
         // go through all the configuered classes, split them and add each single one to the result
