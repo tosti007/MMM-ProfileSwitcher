@@ -37,6 +37,9 @@ Module.register("MMM-ProfileSwitcher", {
         // Determines if the messages for everyone should also be set for profiles that have custome messages.
         includeEveryoneMessages: false,
 
+        // use lock strings by default
+        useLockStrings: true,
+
         // The default time when none is set for a profile in timers
         defaultTime: 60000,
         // Timers for different profiles. A timer lets you automatically swap to a different profile after a certain amount of time. 
@@ -84,7 +87,6 @@ Module.register("MMM-ProfileSwitcher", {
     // Return a function that checks if the given module data should be displayed for the current profile
     isVisible: function (self, useEveryone, classes) {
         return classes.includes(self.current_profile) ||                        // Does this module include the profile?
-               self.config.ignoreModules.some((m) => classes.includes(m)) || // Should this module be ignored?
                (useEveryone && classes.includes(self.config.everyoneClass)); // Should everyone see this module?
     },
 
@@ -92,16 +94,22 @@ Module.register("MMM-ProfileSwitcher", {
     set_profile: function (useEveryone) {
         var self = this;
 
-        MM.getModules().enumerate(function (module) {
+        options = {};
+        if (self.config.useLockStrings) {
+            options.lockString = self.identifier;
+        }
+
+        var modules = MM.getModules().exceptWithClass(self.config.ignoreModules);
+        modules.enumerate(function (module) {
             if (self.isVisible(self, useEveryone, module.data.classes.split(" "))) {
                 module.show(self.config.animationDuration, function () {
                     Log.log(module.name + " is shown.");
-                });
+                }, options);
 
             } else {
                 module.hide(self.config.animationDuration, function () {
                     Log.log(module.name + " is hidden.");
-                });
+                }, options);
             }
         });
     },
@@ -188,6 +196,8 @@ Module.register("MMM-ProfileSwitcher", {
         if (typeof data === "boolean") {
             if (data) {
                 result[this.config.everyoneClass] = [translated];
+            } else {
+                return false;
             }
             return result;
         }
