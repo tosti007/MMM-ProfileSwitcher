@@ -199,6 +199,7 @@ You can switch to a profile on a certain given time by scheduling a notification
     }
 },
 ````
+**Note:** If you have `useLockStrings` on `true` and you want to unhide a module you will have to force it.
 
 ### [MMM-Facial-Recognition] by Paviro
 **Note:** Paviro and I made some changes to use these two modules together more convenient. Once we are sure it fully works I will update this guide.
@@ -246,10 +247,10 @@ And then you should be done!
 * If no class is set then it will never show, unless it is added to the `ignoreModules` array.
 * It's wise to add `alert` and `updatenotification` to the `ignoreModules` array.
 * Using `true` for everyone is the same as not assigning it.
+* If you have `useLockStrings` set to `true` and you want to unhide a certain module you will have to force it.
 
 ## Notes For Other Developers
 * A `CHANGED_PROFILE` notifcation will be send after the `current_user` was modified.
-* I do not use lockstrings for hiding the layout, this way you can still unhide a module at any given moment.
 
 
 ## The MIT License (MIT)
