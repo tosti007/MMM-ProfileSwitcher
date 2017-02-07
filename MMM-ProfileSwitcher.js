@@ -86,8 +86,8 @@ Module.register("MMM-ProfileSwitcher", {
 
     // Return a function that checks if the given module data should be displayed for the current profile
     isVisible: function (self, useEveryone, classes) {
-        return classes.includes(self.current_profile) ||                        // Does this module include the profile?
-               (useEveryone && classes.includes(self.config.everyoneClass)); // Should everyone see this module?
+        return classes.indexOf(self.current_profile) !== -1 ||                     // Does this module include the profile?
+               (useEveryone && classes.indexOf(self.config.everyoneClass) !== -1); // Should everyone see this module?
     },
 
     // Change the current layout into the new layout given the current profile
@@ -211,11 +211,11 @@ Module.register("MMM-ProfileSwitcher", {
                     value = [value];
                 }
 
-                value = value.map((x) => {
+                value = value.map(function (x) {
                     return x === true ? translated : x;
                 });
 
-                classes.split(" ").forEach((key) => {
+                classes.split(" ").forEach(function (key) {
                     if (result[key] === undefined) {
                         result[key] = [];
                     }
