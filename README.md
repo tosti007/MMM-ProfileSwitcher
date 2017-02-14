@@ -249,6 +249,7 @@ Go to the module's main file `localtransport.js` and replace the occurences of `
 * German
 * Dutch
 * Swedish (thanks to Snille)
+* Spanish (thanks to roramirez)
 
 ## Notes
 * Using [MagicMirror-LocalTransport-Module](https://github.com/CFenner/MagicMirror-LocalTransport-Module) by CFenner results in this module to break. See [Using With Other Modules](#magicmirror-localtransport-module-by-cfenner) for a fix.
