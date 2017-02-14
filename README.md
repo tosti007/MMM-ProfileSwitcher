@@ -234,6 +234,15 @@ logout_user: function () {
 ````
 And then you should be done!
 
+### [MagicMirror-LocalTransport-Module](https://github.com/CFenner/MagicMirror-LocalTransport-Module) by CFenner
+The [MagicMirror-LocalTransport-Module](https://github.com/CFenner/MagicMirror-LocalTransport-Module) module does not work (without a fix) with the [MMM-ProfileSwitcher].
+This due to his code overwriting a variable that it a default variable used by the [MagicMirror Framework](https://github.com/MichMich/MagicMirror) and my code need this. Luckily this problem can be solved fairly easily with any text editor.
+
+Go to the module's main file `localtransport.js` and replace the occurences of `this.data` with `this.info`.
+
+**Note:** There should be three occurences on lines `170`, `204` and `209`.
+
+**Side note:** I have send him a pull request with this fix as well so hopefully this will be solved in the future.
 
 ## Current Supported Languages
 * English
@@ -242,6 +251,7 @@ And then you should be done!
 * Swedish (thanks to Snille)
 
 ## Notes
+* Using [MagicMirror-LocalTransport-Module](https://github.com/CFenner/MagicMirror-LocalTransport-Module) by CFenner results in this module to break. See [Using With Other Modules](#magicmirror-localtransport-module-by-cfenner) for a fix.
 * All the profile names are case sensitive.
 * Multiple messages for a single profile will result in a randomly chosen message.
 * If no class is set then it will never show, unless it is added to the `ignoreModules` array.
