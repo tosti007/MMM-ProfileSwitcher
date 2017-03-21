@@ -113,6 +113,11 @@ Module.register("MMM-ProfileSwitcher", {
                 }, options);
             }
         });
+
+        if (this.config.timers && this.config.timers[this.current_profile]){
+            this.set_timer(this.config.timers[this.current_profile]);
+        }
+
     },
 
     // Clear the current timer and set a new one with the new profile.
@@ -147,9 +152,6 @@ Module.register("MMM-ProfileSwitcher", {
                 this.current_profile = newProfile;
                 this.makeNotification(this.config.enterMessages);
                 this.set_profile(true);
-                if (this.config.timers && this.config.timers[newProfile]){
-                    this.set_timer(this.config.timers[newProfile]);
-                }
             }
         }
     },
