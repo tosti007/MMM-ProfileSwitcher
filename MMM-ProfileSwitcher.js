@@ -54,6 +54,7 @@ Module.register("MMM-ProfileSwitcher", {
             es: "translations/es.json",
             de: "translations/de.json",
             sv: "translations/sv.json",
+            fr: "translations/fr.json",
             nl: "translations/nl.json"
         };
     },
