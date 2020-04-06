@@ -165,6 +165,12 @@ Module.register("MMM-ProfileSwitcher", {
             this.sendNotification("CHANGED_PROFILE", {to: this.config.defaultClass});
         } else if (notification === "CURRENT_PROFILE") {
             this.change_profile(payload);
+        } else if (notification === "DISABLE_PROFILE_TIMERS"){
+            clearTimeout(this.timer);
+        } else if (notification === "REENABLE_PROFILE_TIMERS"){
+            if (this.config.timers && this.config.timers[this.current_profile]){
+                this.set_timer(this.config.timers[this.current_profile]);
+            }
         }
     },
 
