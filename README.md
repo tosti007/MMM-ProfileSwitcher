@@ -262,6 +262,7 @@ Go to the module's main file `localtransport.js` and replace the occurences of `
 
 ## Notes For Other Developers
 * A `CHANGED_PROFILE` notifcation will be send after the `current_user` was modified.
+* The timers can be disabled/enabled by sending an `DISABLE_PROFILE_TIMERS` / `ENABLE_PROFILE_TIMERS` notifcation with an empty payload.
 
 
 ## The MIT License (MIT)
