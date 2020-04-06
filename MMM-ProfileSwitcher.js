@@ -167,7 +167,7 @@ Module.register("MMM-ProfileSwitcher", {
             this.change_profile(payload);
         } else if (notification === "DISABLE_PROFILE_TIMERS"){
             clearTimeout(this.timer);
-        } else if (notification === "REENABLE_PROFILE_TIMERS"){
+        } else if (notification === "ENABLE_PROFILE_TIMERS"){
             if (this.config.timers && this.config.timers[this.current_profile]){
                 this.set_timer(this.config.timers[this.current_profile]);
             }
