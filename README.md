@@ -9,6 +9,12 @@ This Module adds the ability to have different layouts for different profiles.
 
 Special thanks goes to [Paviro](https://github.com/paviro) for giving input, working together and because this module's classes idea is based on his [MMM-Facial-Recognition] module's classes idea.
 
+## Unmaintained
+
+I am not currently active anymore in the MagicMirror community, as I am busy with study and life, hence this project is unmaintained. That means I mostly won't creating new features or be replying to questions in-depth on this module, as I don´t really know how the framework works anymore. 
+
+However this module does work as described here so feel free to use it! If you're having problems with the module feel free to ask in an issue, but I will most likely have no answer (but maybe someone does). I will respond to pull requests, so if you have an issue feel free to fix it yourself and shoot me a pull request!
+
 ## Installation
 
 In your terminal, go to your MagicMirror's Module folder:
