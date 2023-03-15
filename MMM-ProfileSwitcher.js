@@ -42,9 +42,11 @@ Module.register("MMM-ProfileSwitcher", {
 
         // The default time when none is set for a profile in timers
         defaultTime: 60000,
+        // The default time a temporary profile is active before the module changes back to the regular profile
+        defaultTimeTemporary: 5000,
         // Timers for different profiles. A timer lets you automatically swap to a different profile after a certain amount of time. 
         // Check README.md for configuration
-        timers: undefined
+        timers: undefined,
     },
 
     // Override the default getTranslations function
@@ -159,18 +161,45 @@ Module.register("MMM-ProfileSwitcher", {
 
     // Override the default NotificationRecieved function
     notificationReceived: function (notification, payload, sender) {
+        const self = this
         if (notification === "DOM_OBJECTS_CREATED") {
             Log.log("Hiding all non default modules.");
             this.set_profile(this.config.includeEveryoneToDefault);
             this.sendNotification("CHANGED_PROFILE", {to: this.config.defaultClass});
         } else if (notification === "CURRENT_PROFILE") {
             this.change_profile(payload);
+            clearTimeout(self.temporaryTimer);
+            self.inTemporaryProfile = false;
         } else if (notification === "DISABLE_PROFILE_TIMERS"){
             clearTimeout(this.timer);
         } else if (notification === "ENABLE_PROFILE_TIMERS"){
             if (this.config.timers && this.config.timers[this.current_profile]){
                 this.set_timer(this.config.timers[this.current_profile]);
             }
+        } else if (notification === "ACTIVATE_TEMPORARY_PROFILE"){
+            clearTimeout(this.timer);
+            clearTimeout(self.temporaryTimer);
+            if (!self.inTemporaryProfile){
+                self.oldProfile = self.current_profile;
+            }
+            self.inTemporaryProfile = true;
+            let newProfile = payload.profile || false;
+            let time = payload.time || self.config.defaultTimeTemporary;
+            if (newProfile !== false){
+                self.change_profile(newProfile);
+                self.temporaryTimer = setTimeout(()=>{
+                    self.change_profile(self.oldProfile)
+                    self.inTemporaryProfile = false;
+                }, time);
+              
+            }
+
+            if (this.config.timers && this.config.timers[this.current_profile]){
+                this.set_timer(this.config.timers[this.current_profile]);
+            }
+        } else if (notification === "ABORT_TEMPORARY_PROFILE"){
+            clearTimeout(self.temporaryTimer);
+            self.change_profile(self.oldProfile);
         }
     },
 
