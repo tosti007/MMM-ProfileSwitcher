@@ -75,7 +75,8 @@ The following properties can be configured:
 | `leaveMessages`            | The notification message that will be shown when we switch to the `defaultClass`. See [Configuring Profile Messages](#configuring-profile-messages) for more information. <br><br> **Possible values:** `Object with profiles` or `false` <br> **Default value:** `{}`
 | `includeEveryoneMessages`  | Determines if the messages for everyone should also be added to the possible messages for profiles that have custome messages. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `useLockStrings` | Determines whether or not to use [*lockStrings*](https://github.com/MichMich/MagicMirror/tree/master/modules#thishidespeed-callback-options). <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`.
-| `defaultTime`              | The default time (in microseconds) when none is set for a profile in `timers`. <br><br> **Possible values:** `number` <br> **Default value:** `60000` (`60` seconds)
+| `defaultTime`              | The default time (in milliseconds) when none is set for a profile in `timers`. <br><br> **Possible values:** `number` <br> **Default value:** `60000` (`60` seconds)
+| `defaultTimeTemporary`              | The default time (in milliseconds) a temporary profile is active before the module changes back to the regular profile. <br><br> **Possible values:** `number` <br> **Default value:** `5000` (`5` seconds)
 | `timers`                   | Timers for different profiles. A timer lets you automatically swap to a different profile after a certain amount of time.  See [Configuring Timers](#configuring-timers) for more information. <br><br> **Possible values:** `Object with timers` or `undefined` <br> **Default value:** `undefined`
 
 
@@ -186,6 +187,17 @@ Like so (replace `'DESIRED_PROFILE_NAME_HERE'` with your profile name):
 ````javascript
 this.sendNotification('CURRENT_PROFILE', 'DESIRED_PROFILE_NAME_HERE');
 ````
+
+### Temporary Profiles
+The module can switch to a temporary profile for a specific amount of time (i.e. to display a video stream module after the bell of the front door has rang).
+To do this send a `ACTIVATE_TEMPORARY_PROFILE` notification with the a payload object containing the options `profile` and `time` (replace `DESIRED_PROFILE_NAME_HERE` with your profile name and `DESIRED_TIME` with the time in milliseconds the profile should be active).
+i.e.
+````javascript
+this.sendNotification('ACTIVATE_TEMPORARY_PROFILE', {'profile': 'DESIRED_PROFILE_NAME_HERE', 'time': DESIRED_TIME} );
+````
+The `time` configuration is optional and the value of `defaultTimeTemporary` is used if it is missing.
+
+If you do not want to wait for the timeout to change back to the regular profile you can abort the temporary profile by sending a `ABORT_TEMPORARY_PROFILE` notification.
 
 ## Using With Other Modules
 Since this module uses notifications, as described in [Switching profiles](#switching-profiles), it can easily be used in conjunction with other modules.
